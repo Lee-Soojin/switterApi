@@ -3,6 +3,7 @@ import cors from "cors";
 import path from "path";
 import os from "os";
 import fs from "fs";
+import uuid4 from "uuid4";
 
 const app = express();
 const directory = path.join(os.homedir(), "Documents");
@@ -88,6 +89,7 @@ app.post("/tweets", (req, res) => {
   const newTweet = {
     username: username,
     tweet: tweet,
+    id: uuid4(),
   };
 
   const userFilePath = path.join(tweetsDir, username + ".json");
