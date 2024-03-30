@@ -101,23 +101,46 @@ app.post("/tweets", (req, res) => {
   res.send("done");
 });
 
-app.delete("/tweets/:id", (req, res) => {
-  const { id } = req.params;
-  if (id) {
-    fs.readFile(timelineFilePath, "utf-8", (_, data) => {
-      let curr = JSON.parse(data);
-      curr.tweetList = curr.tweetList.filter((x) => x.id !== id);
-      return fsAsync
-        .writeFile(timelineFilePath, JSON.stringify(curr), "utf-8") //
-        .then(() => {
-          res.send("done");
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    });
-  } else {
-    res.send("This tweet is not exist");
+app.delete("/tweets", async (req, res) => {
+  try {
+    const { id, username } = req.body;
+
+    if (!id) {
+      return res.status(400).send("Tweet ID is required");
+    }
+
+    const timelineData = await fsAsync.readFile(timelineFilePath, "utf-8");
+    const timeline = JSON.parse(timelineData);
+
+    const updatedTimeline = {
+      ...timeline,
+      tweetList: timeline.tweetList.filter((tweet) => tweet.id !== id),
+    };
+
+    await fsAsync.writeFile(
+      timelineFilePath,
+      JSON.stringify(updatedTimeline),
+      "utf-8"
+    );
+
+    const userFilePath = path.join(tweetsDir, `${username}.json`);
+    const userData = await fsAsync.readFile(userFilePath, "utf-8");
+    const userTimeLine = JSON.parse(userData);
+
+    const updatedUserTimeline = {
+      ...userTimeLine,
+      tweetList: userTimeLine.tweetList.filter((tweet) => tweet.id !== id),
+    };
+
+    await fsAsync.writeFile(
+      userFilePath,
+      JSON.stringify(updatedUserTimeline),
+      "utf-8"
+    );
+    res.send("done");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Interval Server Error");
   }
 });
 
