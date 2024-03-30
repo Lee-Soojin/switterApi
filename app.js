@@ -27,6 +27,41 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 
+
+app.get("/tweets", (req, res) => {
+  const username = req.params?.username;
+
+  if (username) {
+    console.log("params username", username);
+    const userFilePath = path.join(tweetsDir, username + ".json");
+    fs.readFile(userFilePath, "utf-8", (err, data) => {
+      if (err) {
+        console.error(err);
+        res
+          .statusCode(500)
+          .send(
+            "파일을 읽어오는 도중 문제가 발생하였습니다. 다시 시도해주세요."
+          );
+      } else {
+        res.status(200).send(data);
+      }
+    });
+  } else {
+    fs.readFile(timelineFilePath, "utf-8", (err, data) => {
+      if (err) {
+        console.error(err);
+        res
+          .statusCode(500)
+          .send(
+            "파일을 읽어오는 도중 문제가 발생하였습니다. 다시 시도해주세요."
+          );
+      } else {
+        res.status(200).send(data);
+      }
+    });
+  }
+});
+
 function UploadTweet(filePath, tweetObj) {
   if (fs.existsSync(filePath)) {
     fs.readFile(filePath, "utf-8", (err, data) => {
