@@ -27,12 +27,9 @@ const corsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 
-
 app.get("/tweets", (req, res) => {
-  const username = req.params?.username;
-
+  const username = req.query?.username;
   if (username) {
-    console.log("params username", username);
     const userFilePath = path.join(tweetsDir, username + ".json");
     fs.readFile(userFilePath, "utf-8", (err, data) => {
       if (err) {
