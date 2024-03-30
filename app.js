@@ -101,4 +101,9 @@ app.post("/tweets", (req, res) => {
   res.send("done");
 });
 
+app.use((error, req, res, next) => {
+  console.error(error);
+  res.status(500).send("Something went wrong");
+});
+
 app.listen(8080);
