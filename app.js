@@ -4,6 +4,7 @@ import path from "path";
 import os from "os";
 import fs from "fs";
 import uuid4 from "uuid4";
+import fsAsync from "fs/promises";
 
 const app = express();
 const directory = path.join(os.homedir(), "Documents");
@@ -98,6 +99,26 @@ app.post("/tweets", (req, res) => {
   UploadTweet(userFilePath, newTweet);
 
   res.send("done");
+});
+
+app.delete("/tweets/:id", (req, res) => {
+  const { id } = req.params;
+  if (id) {
+    fs.readFile(timelineFilePath, "utf-8", (_, data) => {
+      let curr = JSON.parse(data);
+      curr.tweetList = curr.tweetList.filter((x) => x.id !== id);
+      return fsAsync
+        .writeFile(timelineFilePath, JSON.stringify(curr), "utf-8") //
+        .then(() => {
+          res.send("done");
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    });
+  } else {
+    res.send("This tweet is not exist");
+  }
 });
 
 app.use((error, req, res, next) => {
