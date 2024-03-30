@@ -121,6 +121,33 @@ app.delete("/tweets/:id", (req, res) => {
   }
 });
 
+app.put("/tweets/:id", (req, res) => {
+  const { id } = req.params;
+  const newTweet = req.body?.tweet;
+  if (id) {
+    fs.readFile(timelineFilePath, "utf-8", async (err, data) => {
+      if (err) console.error(err);
+      let curr = JSON.parse(data);
+      let index = curr.tweetList.findIndex((x) => x.id === id);
+      let prevTweet = curr.tweetList[index];
+      console.log("prev", prevTweet);
+      curr.tweetList.splice(index, 1, { ...prevTweet, tweet: newTweet });
+      try {
+        await fsAsync.writeFile(
+          timelineFilePath,
+          JSON.stringify(curr),
+          "utf-8"
+        ); //
+        res.send("done");
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  } else {
+    res.send("This tweet is not exist");
+  }
+});
+
 app.use((error, req, res, next) => {
   console.error(error);
   res.status(500).send("Something went wrong");
