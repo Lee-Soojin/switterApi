@@ -1,12 +1,22 @@
-import express, { json } from "express";
+import express from "express";
+import "express-async-errors";
 import cors from "cors";
 import path from "path";
 import os from "os";
 import fs from "fs";
+import morgan from "morgan";
+import helmet from "helmet";
 import uuid4 from "uuid4";
 import fsAsync from "fs/promises";
+import tweetsRouter from "./router/tweets.js";
 
 const app = express();
+app.use(express.json());
+app.use(helmet());
+app.use(morgan("tiny"));
+
+app.use("/tweets", tweetsRouter);
+
 const directory = path.join(os.homedir(), "Documents");
 
 if (!fs.existsSync(directory)) {
@@ -27,7 +37,7 @@ const corsOptions = {
 };
 
 app.use(express.json());
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.get("/tweets", (req, res) => {
   const username = req.query?.username;
@@ -89,6 +99,7 @@ app.post("/tweets", (req, res) => {
     username: username,
     tweet: tweet,
     id: uuid4(),
+    uploadDate: new Date(),
   };
 
   const userFilePath = path.join(tweetsDir, username + ".json");
@@ -168,9 +179,12 @@ app.put("/tweets/:id", (req, res) => {
   }
 });
 
+app.use((req, res, next) => {
+  res.sendStatus(404);
+});
 app.use((error, req, res, next) => {
   console.error(error);
-  res.status(500).send("Something went wrong");
+  res.sendStatus(500);
 });
 
 app.listen(8080);
