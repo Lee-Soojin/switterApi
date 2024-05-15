@@ -4,7 +4,9 @@ import express from "express";
 import "express-async-errors";
 import cors from "cors";
 import path from "path";
-import * as tweetRepository from "../data/tweet.js";
+import * as tweetController from "../controller/tweet.js";
+import { body, param, validationResult } from "express-validator";
+import { validate } from "../middleware/validate.js";
 
 const tweetsRouter = express.Router();
 
@@ -18,46 +20,49 @@ if (!fs.existsSync(directory)) {
   );
 }
 
-tweetsRouter.get("/", (req, res) => {
-  const username = req.query?.username;
+tweetsRouter.get("/", tweetController.getTweets);
 
-  const data = username
-    ? tweetRepository.getAllByUserName(username)
-    : tweetRepository.getAll();
-  res.status(200).json(data);
-});
+tweetsRouter.get(
+  "/:id",
+  [
+    param("id").notEmpty().withMessage("가져올 트윗의 아이디가 없습니다."),
+    validate,
+  ],
+  tweetController.getTweet
+);
 
-tweetsRouter.get("/:id", (req, res) => {
-  const id = req.params?.id;
-  const data = tweetRepository.getAllById(id);
-  if (data) res.status(200).json(data);
-  else
-    res
-      .status(404)
-      .json({ message: "해당 아이디를 가진 트윗이 존재하지 않습니다." });
-});
+tweetsRouter.post(
+  "/",
+  [
+    body("username")
+      .isLength({ min: 1 })
+      .withMessage("유저 이름 데이터가 없습니다."),
+    body("tweet")
+      .trim()
+      .isLength({ min: 3 })
+      .withMessage("Text should be at least 3 characters"),
+    validate,
+  ],
+  tweetController.createTweet
+);
 
-tweetsRouter.post("/", (req, res) => {
-  const { username, tweet } = req.body;
-  const newTweet = tweetRepository.create(tweet, username);
-  res.status(201).json(newTweet);
-});
+tweetsRouter.delete(
+  "/",
+  [
+    param("id").notEmpty().withMessage("삭제할 트윗의 아이디가 없습니다."),
+    validate,
+  ],
+  tweetController.deleteTweet
+);
 
-tweetsRouter.delete("/", async (req, res) => {
-  const { id } = req.body;
-  tweetRepository.remove(id);
-  res.sendStatus(204);
-});
-
-tweetsRouter.put("/:id", (req, res) => {
-  const { id } = req.params;
-  const text = req.body?.tweet;
-  const newTweet = tweetRepository.update(text, id);
-  if (newTweet) {
-    res.status(200).json(newTweet);
-  } else {
-    res.status(404).json({ message: "트윗 수정에 실패하였습니다." });
-  }
-});
+tweetsRouter.put(
+  "/:id",
+  [
+    param("id").notEmpty().withMessage("수정할 트윗의 아이디가 없습니다."),
+    body("tweet").trim().notEmpty().withMessage("트윗 내용을 입력해주세요."),
+    validate,
+  ],
+  tweetController.updateTweet
+);
 
 export default tweetsRouter;
