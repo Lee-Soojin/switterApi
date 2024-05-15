@@ -2,16 +2,16 @@ import uuid4 from "uuid4";
 
 let tweets = [];
 
-export function getAll() {
+export async function getAll() {
   return tweets;
 }
-export function getAllByUserName(username) {
+export async function getAllByUserName(username) {
   return tweets.filter((x) => x.username === username);
 }
-export function getAllById(id) {
+export async function getAllById(id) {
   return tweets.find((x) => x.id === id);
 }
-export function create(text, username) {
+export async function create(text, username) {
   const newTweet = {
     tweet: text,
     username: username,
@@ -22,12 +22,12 @@ export function create(text, username) {
   return tweets;
 }
 
-export function update(text, id) {
+export async function update(text, id) {
   const tweet = tweets.find((x) => x.id === id);
   if (tweet) tweet.tweet = text;
   return tweet;
 }
 
-export function remove(id) {
+export async function remove(id) {
   tweets = tweets.filter((x) => x.id !== id);
 }
