@@ -4,6 +4,7 @@ import express from "express";
 import "express-async-errors";
 import cors from "cors";
 import path from "path";
+import { body, param } from "express-validator";
 import * as tweetController from "../controller/tweet.js";
 import { body, param, validationResult } from "express-validator";
 import { validate } from "../middleware/validate.js";
@@ -31,20 +32,7 @@ tweetsRouter.get(
   tweetController.getTweet
 );
 
-tweetsRouter.post(
-  "/",
-  [
-    body("username")
-      .isLength({ min: 1 })
-      .withMessage("유저 이름 데이터가 없습니다."),
-    body("tweet")
-      .trim()
-      .isLength({ min: 3 })
-      .withMessage("Text should be at least 3 characters"),
-    validate,
-  ],
-  tweetController.createTweet
-);
+tweetsRouter.post("/", validateTweet, tweetController.createTweet);
 
 tweetsRouter.delete(
   "/",
@@ -55,14 +43,6 @@ tweetsRouter.delete(
   tweetController.deleteTweet
 );
 
-tweetsRouter.put(
-  "/:id",
-  [
-    param("id").notEmpty().withMessage("수정할 트윗의 아이디가 없습니다."),
-    body("tweet").trim().notEmpty().withMessage("트윗 내용을 입력해주세요."),
-    validate,
-  ],
-  tweetController.updateTweet
-);
+tweetsRouter.put("/:id", validateTweet, tweetController.updateTweet);
 
 export default tweetsRouter;
