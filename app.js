@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import tweetsRouter from "./router/tweets.js";
+import authRouter from "./router/auth.js";
 
 const app = express();
 app.use(express.json());
@@ -11,6 +12,7 @@ app.use(helmet());
 app.use(morgan("tiny"));
 
 app.use("/tweets", tweetsRouter);
+app.use("/user", authRouter);
 
 const corsOptions = {
   origin: ["http://localhost:3000"],
