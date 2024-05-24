@@ -6,8 +6,11 @@ import cors from "cors";
 import path from "path";
 import { body, param } from "express-validator";
 import * as tweetController from "../controller/tweet.js";
-import { body, param, validationResult } from "express-validator";
 import { validate } from "../middleware/validate.js";
+
+// validation
+// sanitization
+// Contract Testing: Client-Server
 
 const tweetsRouter = express.Router();
 
@@ -20,6 +23,14 @@ if (!fs.existsSync(directory)) {
     "You don't have Documents folder in your computer. Please make sure you have Documents folder in your computer."
   );
 }
+
+const validateTweet = [
+  body("tweet")
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage("Text should be at least 3 characters"),
+  validate,
+];
 
 tweetsRouter.get("/", tweetController.getTweets);
 
