@@ -7,6 +7,7 @@ import path from "path";
 import { body, param } from "express-validator";
 import * as tweetController from "../controller/tweet.js";
 import { validate } from "../middleware/validate.js";
+import { isAuth } from "../middleware/auth.js";
 
 // validation
 // sanitization
@@ -32,7 +33,9 @@ const validateTweet = [
   validate,
 ];
 
-tweetsRouter.get("/", tweetController.getTweets);
+tweetsRouter.get("/", isAuth, tweetController.getAllTweets);
+
+tweetsRouter.get("/:username", isAuth, tweetController.getTweetsByUsername);
 
 tweetsRouter.get(
   "/:id",
@@ -47,6 +50,7 @@ tweetsRouter.post("/", validateTweet, tweetController.createTweet);
 
 tweetsRouter.delete(
   "/",
+  isAuth,
   [
     param("id").notEmpty().withMessage("삭제할 트윗의 아이디가 없습니다."),
     validate,
@@ -54,6 +58,6 @@ tweetsRouter.delete(
   tweetController.deleteTweet
 );
 
-tweetsRouter.put("/:id", validateTweet, tweetController.updateTweet);
+tweetsRouter.put("/:id", isAuth, validateTweet, tweetController.updateTweet);
 
 export default tweetsRouter;
