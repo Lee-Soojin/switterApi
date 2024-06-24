@@ -12,7 +12,7 @@ app.use(helmet());
 app.use(morgan("tiny"));
 
 app.use("/tweets", tweetsRouter);
-app.use("/user", authRouter);
+app.use("/auth", authRouter);
 
 const corsOptions = {
   origin: ["http://localhost:3000"],
