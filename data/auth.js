@@ -11,7 +11,6 @@ let users = [
     id: "abc",
   },
 ];
-
 export async function getUser(username) {
   return users.find((x) => x.username === username);
 }
@@ -23,6 +22,5 @@ export async function addUser(user) {
 }
 
 export async function findById(id) {
-  console.log(users.find((x) => x.id === id));
   return users.find((x) => x.id === id);
 }
