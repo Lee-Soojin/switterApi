@@ -8,6 +8,7 @@ export const isAuth = async (req, res, next) => {
   if (!(authHeader && authHeader.startsWith("Bearer "))) {
     return res.status(401).json(AUTH_ERROR);
   }
+
   const token = authHeader.split(" ")[1];
   // TODO: Make it secure!
   jwt.verify(token, `P8+rk]N/WyY49\X9g9)I7D+E`, async (error, decoded) => {
@@ -18,7 +19,9 @@ export const isAuth = async (req, res, next) => {
     if (!user) {
       return res.status(401).json(AUTH_ERROR);
     }
+
     req.userId = user.id; // req.customData
+    req.token = token;
     next();
   });
 };
