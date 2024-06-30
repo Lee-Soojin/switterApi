@@ -11,7 +11,7 @@ function createJwtToken(id) {
 }
 
 export async function signUp(req, res) {
-  const { username, id, name, password, url, email } = req.body;
+  const { username, name, password, url, email } = req.body;
   const found = await authRepository.getUser(username);
   if (found) {
     return res
@@ -19,7 +19,6 @@ export async function signUp(req, res) {
       .json({ message: `${username}로 가입된 이력이 존재합니다.` });
   }
   const hashed = await bcrypt.hash(password, bcryptSaltRounds);
-  console.log(hashed);
   const userId = await authRepository.addUser({
     username,
     password: hashed,
@@ -52,9 +51,9 @@ export async function getUserInfo(req, res) {
 }
 
 export async function me(req, res, next) {
-  let user = await authRepository.findById(req.userId);
+  const user = await authRepository.findById(req.userId);
   if (!user) {
-    res.status(404).json({ message: "User not found." });
+    return res.status(404).json({ message: "User not found" });
   }
-  res.status(200).json({ token: req.token, username: req.username });
+  res.status(200).json({ token: req.token, username: user.username });
 }
