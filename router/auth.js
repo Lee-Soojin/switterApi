@@ -7,6 +7,7 @@ import path from "path";
 import { body, param } from "express-validator";
 import * as authController from "../controller/auth.js";
 import { validate } from "../middleware/validate.js";
+import { isAuth } from "../middleware/auth.js";
 
 function validatePassword(password) {
   return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
@@ -59,6 +60,6 @@ authRouter.post("/login", validateCredential, authController.signIn);
 
 // get user info
 
-authRouter.get("/me", authController.me);
+authRouter.get("/me", isAuth, authController.me);
 
 export default authRouter;
