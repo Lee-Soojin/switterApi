@@ -25,12 +25,12 @@ export async function getById(id) {
   console.log({ ...found, username, name, image });
   return { ...found, username, name, image };
 }
-export async function create(text, username) {
+export async function create(text, userId) {
   const newTweet = {
     tweet: text,
     uploadDate: new Date().toString(),
     id: uuid4(),
-    username,
+    userId,
   };
   tweets = [newTweet, ...tweets];
   return tweets;
