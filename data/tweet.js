@@ -13,8 +13,8 @@ export async function getAll() {
   );
 }
 
-export async function getAllByUserName(username) {
-  return tweets.filter((x) => x.username === username);
+export async function getAllByUserId(userId) {
+  return tweets.filter((x) => x.userId === userId);
 }
 export async function getById(id) {
   const found = tweets.find((tweet) => tweet.id === id);

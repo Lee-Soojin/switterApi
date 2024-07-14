@@ -5,12 +5,12 @@ export async function getAllTweets(req, res) {
   res.status(200).json(data);
 }
 
-export async function getTweetsByUsername(req, res) {
-  const username = req.query?.username;
-
-  const data = await (username
-    ? tweetRepository.getAllByUserName(username)
+export async function getTweetsByUserId(req, res) {
+  const userId = req.query?.userId;
+  const data = await (userId
+    ? tweetRepository.getAllByUserId(userId)
     : tweetRepository.getAll());
+
   res.status(200).json(data);
 }
 
