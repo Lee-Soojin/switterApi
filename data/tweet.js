@@ -5,10 +5,10 @@ let tweets = [];
 export async function getAll() {
   return Promise.all(
     tweets.map(async (tweet) => {
-      const { username, name, url } = await userRepository.findById(
+      const { username, name, url, image } = await userRepository.findById(
         tweet.userId
       );
-      return { ...tweet, username, name, url };
+      return { ...tweet, username, name, url, image };
     })
   );
 }
@@ -21,8 +21,9 @@ export async function getById(id) {
   if (!found) {
     return null;
   }
-  const { username, name, url } = await userRepository.findById(found.userId);
-  return { ...found, username, name, url };
+  const { username, name, image } = await userRepository.findById(found.userId);
+  console.log({ ...found, username, name, image });
+  return { ...found, username, name, image };
 }
 export async function create(text, username) {
   const newTweet = {
