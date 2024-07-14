@@ -46,7 +46,7 @@ tweetsRouter.get(
   tweetController.getTweet
 );
 
-tweetsRouter.post("/", validateTweet, tweetController.createTweet);
+tweetsRouter.post("/", isAuth, validateTweet, tweetController.createTweet);
 
 tweetsRouter.delete(
   "/",
