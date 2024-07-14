@@ -39,7 +39,9 @@ export async function create(text, userId) {
 export async function update(id, text) {
   const tweet = tweets.find((x) => x.id === id);
   if (tweet) tweet.tweet = text;
-  return tweet;
+  const index = tweets.findIndex((x) => x.id === id);
+  tweets.splice(index, 1, tweet);
+  return getById(tweet.id);
 }
 
 export async function remove(id) {
