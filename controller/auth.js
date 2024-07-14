@@ -1,13 +1,12 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as authRepository from "../data/auth.js";
-
-const jwtSecretKey = `P8+rk]N/WyY49\X9g9)I7D+E`;
-const jwtExpiresInDays = "2d";
-const bcryptSaltRounds = 12;
+import { config } from "../config.js";
 
 function createJwtToken(id) {
-  return jwt.sign({ id }, jwtSecretKey, { expiresIn: jwtExpiresInDays });
+  return jwt.sign({ id }, config.jwt.secretKey, {
+    expiresIn: config.jwt.expiresInSec,
+  });
 }
 
 export async function signUp(req, res) {
@@ -18,7 +17,7 @@ export async function signUp(req, res) {
       .status(409)
       .json({ message: `${username}로 가입된 이력이 존재합니다.` });
   }
-  const hashed = await bcrypt.hash(password, bcryptSaltRounds);
+  const hashed = await bcrypt.hash(password, config.bcrypt.saltRounds);
   const userId = await authRepository.addUser({
     username,
     password: hashed,
@@ -55,5 +54,5 @@ export async function me(req, res, next) {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  res.status(200).json({ token: req.token, username: user.username });
+  res.status(200).json({ token: req.token, ...user });
 }
