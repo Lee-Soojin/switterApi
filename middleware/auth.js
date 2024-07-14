@@ -1,18 +1,21 @@
 import jwt from "jsonwebtoken";
 import * as userRepository from "../data/auth.js";
+import { config } from "../config.js";
 
 const AUTH_ERROR = { message: "Authentication Error" };
 
 export const isAuth = async (req, res, next) => {
   const authHeader = req.get("Authorization");
+
   if (!(authHeader && authHeader.startsWith("Bearer "))) {
     return res.status(401).json(AUTH_ERROR);
   }
 
   const token = authHeader.split(" ")[1];
   // TODO: Make it secure!
-  jwt.verify(token, `P8+rk]N/WyY49\X9g9)I7D+E`, async (error, decoded) => {
+  jwt.verify(token, config.jwt.secretKey, async (error, decoded) => {
     if (error) {
+      console.log(error);
       return res.status(401).json(AUTH_ERROR);
     }
     const user = await userRepository.findById(decoded.id);
@@ -20,7 +23,7 @@ export const isAuth = async (req, res, next) => {
       return res.status(401).json(AUTH_ERROR);
     }
 
-    req.userId = user.id; // req.customData
+    req.userId = user.id;
     req.token = token;
     next();
   });
