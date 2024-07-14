@@ -48,6 +48,13 @@ export async function updateTweet(req, res) {
 
 export async function deleteTweet(req, res) {
   const { id } = req.body;
+  const tweet = tweetRepository.getById(id);
+  if (!tweet) {
+    return res.sendStatus(404);
+  }
+  if (tweet.userId !== req.userId) {
+    return res.sendStatus(403);
+  }
   await tweetRepository.remove(id);
   res.sendStatus(204);
 }
