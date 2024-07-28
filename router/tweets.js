@@ -48,15 +48,7 @@ tweetsRouter.get(
 
 tweetsRouter.post("/", isAuth, validateTweet, tweetController.createTweet);
 
-tweetsRouter.delete(
-  "/",
-  isAuth,
-  [
-    param("id").notEmpty().withMessage("삭제할 트윗의 아이디가 없습니다."),
-    validate,
-  ],
-  tweetController.deleteTweet
-);
+tweetsRouter.delete("/", isAuth, tweetController.deleteTweet);
 
 tweetsRouter.put("/:id", isAuth, validateTweet, tweetController.updateTweet);
 
