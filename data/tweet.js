@@ -12,28 +12,30 @@ export async function getAll() {
 
 export async function getAllByUserId(userId) {
   return db
-    .execute(`${SELECT_JOIN} WHERE us.id=? ${ORDER_DESC}`, [userId]) //
+    .execute(`${SELECT_JOIN} WHERE userId=? ${ORDER_DESC}`, [userId]) //
     .then((result) => result[0]);
 }
+
 export async function getById(id) {
   return db
-    .execute(`${SELECT_JOIN} WHERE tw.id=?`, [id]) //
+    .execute(`${SELECT_JOIN} WHERE tw.id=?`, [id])
     .then((result) => result[0][0]);
 }
-export async function create(text, userId) {
+
+export async function create(tweet, userId) {
   return db
-    .execute("INSERT INTO tweets (tweet, createdAt, userId) VALUES(?,?,?)", [
-      text,
+    .execute("INSERT INTO tweets (text, createdAt, userId) VALUES(?,?,?)", [
+      tweet,
       new Date(),
       userId,
-    ]) //
+    ])
     .then((result) => getById(result[0].insertId));
 }
 
 export async function update(id, text) {
   return db
-    .execute("UPDATE tweets SET tweet=? WHERE id=?", [text, id]) //
-    .then((result) => getById(id));
+    .execute("UPDATE tweets SET text=? WHERE id=?", [text, id])
+    .then(() => getById(id));
 }
 
 export async function remove(id) {
