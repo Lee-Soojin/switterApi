@@ -9,6 +9,7 @@ import { config } from "./config.js";
 import { Server } from "socket.io";
 import { initSocket } from "./connection/socket.js";
 import { db } from "./db/database.js";
+import { connectDB } from "./database/database.js";
 
 const app = express();
 app.use(express.json());
@@ -29,7 +30,11 @@ app.use((error, req, res, next) => {
   res.sendStatus(500);
 });
 
-db.getConnection().then(console.log);
-
-const server = app.listen(config.host.port);
-initSocket(server);
+connectDB()
+  .then(() => {
+    const server = app.listen(config.host.port);
+    initSocket(server);
+  })
+  .catch((error) => {
+    console.error("Failed to connect to the database:", error);
+  });
