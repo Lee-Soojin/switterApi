@@ -50,6 +50,6 @@ tweetsRouter.post("/", isAuth, validateTweet, tweetController.createTweet);
 
 tweetsRouter.delete("/", isAuth, tweetController.deleteTweet);
 
-tweetsRouter.put("/:id", isAuth, validateTweet, tweetController.updateTweet);
+tweetsRouter.put("/", isAuth, validateTweet, tweetController.updateTweet);
 
 export default tweetsRouter;
