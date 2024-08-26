@@ -7,11 +7,8 @@ export async function getAllTweets(req, res) {
 }
 
 export async function getTweetsByUserId(req, res) {
-  const userId = req.query?.userId;
-  const data = await (userId
-    ? tweetRepository.getAllByUserId(userId)
-    : tweetRepository.getAll());
-
+  const username = req.params?.username;
+  const data = await tweetRepository.getAllByUsername(username);
   res.status(200).json(data);
 }
 
