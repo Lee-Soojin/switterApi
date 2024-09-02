@@ -50,7 +50,7 @@ export async function getUserInfo(req, res) {
 }
 
 export async function me(req, res, next) {
-  const user = await authRepository.findById(req.userId);
+  const user = await authRepository.findUserById(req.userId);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }

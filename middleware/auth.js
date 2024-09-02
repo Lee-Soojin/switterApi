@@ -18,7 +18,7 @@ export const isAuth = async (req, res, next) => {
       console.log(error);
       return res.status(401).json(AUTH_ERROR);
     }
-    const user = await userRepository.findById(decoded.id);
+    const user = await userRepository.findUserById(decoded.id);
     if (!user) {
       return res.status(401).json(AUTH_ERROR);
     }
