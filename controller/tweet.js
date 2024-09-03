@@ -24,11 +24,11 @@ export async function getTweet(req, res) {
 
 export async function createTweet(req, res) {
   const { text } = req.body;
-  const newTweet = await tweetRepository.create(text, req.userId);
+  const response = await tweetRepository.create(text, req.userId);
 
   getSocketIO().emit("update");
 
-  res.status(201).json(newTweet);
+  res.status(201).json(response);
 }
 
 export async function updateTweet(req, res) {
