@@ -42,8 +42,6 @@ export async function create(text, userId) {
 }
 
 export async function update(id, text) {
-  console.log(id, text);
-
   return Tweet.findByIdAndUpdate(
     id,
     {
