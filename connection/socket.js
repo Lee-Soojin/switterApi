@@ -24,7 +24,7 @@ class Socket {
       });
     });
 
-    this.io.on("connection", (socket) => {
+    this.io.on("connection", () => {
       console.log("Socket client connected");
     });
   }
