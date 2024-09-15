@@ -1,10 +1,7 @@
-import os from "os";
-import fs from "fs";
 import express from "express";
 import "express-async-errors";
 import cors from "cors";
-import path from "path";
-import { body, param } from "express-validator";
+import { body } from "express-validator";
 import * as authController from "../controller/auth.js";
 import { validate } from "../middleware/validate.js";
 import { isAuth } from "../middleware/auth.js";
@@ -61,5 +58,9 @@ authRouter.post("/login", validateCredential, authController.signIn);
 // get user info
 
 authRouter.get("/me", isAuth, authController.me);
+
+// get user profile
+
+authRouter.get("/profile/:id", isAuth, authController.getProfile);
 
 export default authRouter;
