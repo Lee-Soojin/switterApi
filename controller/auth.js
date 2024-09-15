@@ -49,10 +49,27 @@ export async function getUserInfo(req, res) {
   } else res.status(400).json({ message: "잘못된 접근입니다." });
 }
 
-export async function me(req, res, next) {
+export async function me(req, res) {
   const user = await authRepository.findUserById(req.userId);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
   res.status(200).json({ token: req.token, ...user });
+}
+
+export async function getProfile(req, res) {
+  const userId = req.params?.id;
+
+  let data = await authRepository.getUserProfile(userId);
+  const userData = {
+    username: data.username,
+    name: data.name,
+    email: data.email,
+    url: data.url,
+    id: data.id,
+  };
+
+  if (data) {
+    res.status(200).json(userData);
+  } else res.status(400).json({ message: "잘못된 접근입니다." });
 }
