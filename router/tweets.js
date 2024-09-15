@@ -37,15 +37,6 @@ tweetsRouter.get("/", isAuth, tweetController.getAllTweets);
 
 tweetsRouter.get("/:username", isAuth, tweetController.getTweetsByUserId);
 
-tweetsRouter.get(
-  "/:id",
-  [
-    param("id").notEmpty().withMessage("가져올 트윗의 아이디가 없습니다."),
-    validate,
-  ],
-  tweetController.getTweet
-);
-
 tweetsRouter.post("/", isAuth, validateTweet, tweetController.createTweet);
 
 tweetsRouter.delete("/", isAuth, tweetController.deleteTweet);
