@@ -29,3 +29,7 @@ export async function addUser(user) {
 function mapOptionalUser(user) {
   return user ? { ...user, id: user._id.toString() } : user;
 }
+
+export async function getUserProfile(username) {
+  return User.findOne({ username });
+}
