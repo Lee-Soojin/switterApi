@@ -64,5 +64,5 @@ export async function deleteTweet(req, res) {
 
   getSocketIO().emit("update");
 
-  res.sendStatus(204);
+  return res.status(200).json({ message: "done" });
 }
