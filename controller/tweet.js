@@ -36,13 +36,13 @@ export async function createTweet(req, res) {
 }
 
 export async function updateTweet(req, res) {
-  const { id } = req.params;
-  const text = req.body?.tweet;
+  const { id, text } = req.body;
   const tweet = await tweetRepository.getById(id);
 
   if (!tweet) {
     return res.sendStatus(404);
   }
+
   if (tweet.userId !== req.userId) {
     return res.sendStatus(403);
   }
