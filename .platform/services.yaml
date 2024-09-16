@@ -8,3 +8,6 @@ oracle-mysql:
   type: oracle-mysql:8.0
   # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
   disk: 512
+  mysqldatabase:
+    type: mysql:10.4
+    disk: 1024
