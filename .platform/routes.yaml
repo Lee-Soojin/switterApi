@@ -9,5 +9,6 @@
 
 "https://{default}/ws":
   type: upstream
+  websocket: true
   cache:
     enabled: false
