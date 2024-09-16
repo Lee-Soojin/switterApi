@@ -26,7 +26,7 @@ if (!fs.existsSync(directory)) {
 }
 
 const validateTweet = [
-  body("tweet")
+  body("text")
     .trim()
     .isLength({ min: 3 })
     .withMessage("Text should be at least 3 characters"),
