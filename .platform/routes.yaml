@@ -9,6 +9,5 @@
 
 "https://{default}/ws":
   type: upstream
-  to: "switter:http",
-  cache: 
+  cache:
     enabled: false
