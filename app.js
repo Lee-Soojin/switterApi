@@ -10,6 +10,11 @@ import { Server } from "socket.io";
 import { initSocket } from "./connection/socket.js";
 import { db } from "./db/database.js";
 
+const corsOption = {
+  origin: config.cors.allowedOrigin,
+  optionsSuccessStatus: 200,
+};
+
 const app = express();
 app.use(express.json());
 app.use(helmet());
@@ -19,7 +24,7 @@ app.use("/tweets", tweetsRouter);
 app.use("/auth", authRouter);
 
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOption));
 
 app.use((req, res, next) => {
   res.sendStatus(404);
