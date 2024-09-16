@@ -1,5 +1,5 @@
-import { socketIO } from "../app.js";
 import * as tweetRepository from "../data/tweet.js";
+import { getSocketIO } from "../connection/socket.js";
 
 export async function getAllTweets(req, res) {
   const data = await tweetRepository.getAll();
@@ -7,9 +7,10 @@ export async function getAllTweets(req, res) {
 }
 
 export async function getTweetsByUserId(req, res) {
-  const userId = req.query?.userId;
-  const data = await (userId
-    ? tweetRepository.getAllByUserId(userId)
+  const { username } = req.query;
+
+  const data = await (username
+    ? tweetRepository.getAllByUsername(username)
     : tweetRepository.getAll());
 
   res.status(200).json(data);
@@ -29,7 +30,7 @@ export async function createTweet(req, res) {
   const { tweet } = req.body;
   const newTweet = await tweetRepository.create(tweet, req.userId);
 
-  socketIO.emit("update", "New Tweets!");
+  getSocketIO().emit("update", "New Tweets!");
 
   res.status(201).json(newTweet);
 }
@@ -47,7 +48,7 @@ export async function updateTweet(req, res) {
   }
 
   const updated = await tweetRepository.update(id, text);
-  socketIO.emit("update", "New Update!");
+  getSocketIO().emit("update", "New Update!");
 
   res.status(200).json(updated);
 }
@@ -64,7 +65,7 @@ export async function deleteTweet(req, res) {
   }
 
   await tweetRepository.remove(id);
-  socketIO.emit("update", "Done!");
+  getSocketIO().emit("update", "Done!");
 
   res.sendStatus(204);
 }

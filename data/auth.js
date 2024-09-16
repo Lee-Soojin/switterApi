@@ -1,26 +1,45 @@
-import uuid4 from "uuid4";
+import SQ from "sequelize";
+import { sequelize } from "../db/database.js";
+const DataTypes = SQ.DataTypes;
 
-let users = [
+export const User = sequelize.define(
+  "user",
   {
-    username: "soojin",
-    password: "$2b$12$cfUBZyjFGGhuCwBpInoF4uxjLTCjHo263SZ48y/pD6uXI2rYXuRi6",
-    name: "Jin",
-    email: "jin@naver.com",
-    image:
-      "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y3V0ZXxlbnwwfHwwfHx8MA%3D%3D",
-    id: "abc",
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
+    username: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING(128),
+      allowNull: false,
+    },
+    url: DataTypes.TEXT,
   },
-];
-export async function getUser(username) {
-  return users.find((x) => x.username === username);
-}
+  { timestamps: false }
+);
 
-export async function addUser(user) {
-  const newUser = { ...user, id: uuid4() };
-  users.push(newUser);
-  return newUser.id;
+export async function getUser(username) {
+  return User.findOne({ where: { username } });
 }
 
 export async function findById(id) {
-  return users.find((x) => x.id === id);
+  return User.findByPk(id);
+}
+
+export async function addUser(user) {
+  return User.create(user).then((data) => data.dataValues.id);
 }
