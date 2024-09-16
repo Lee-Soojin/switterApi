@@ -21,10 +21,10 @@ app.use("/auth", authRouter);
 app.use(express.json());
 app.use(cors());
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.sendStatus(404);
 });
-app.use((error, req, res, next) => {
+app.use((error, req, res) => {
   console.error(error);
   res.sendStatus(500);
 });
