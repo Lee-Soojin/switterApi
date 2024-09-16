@@ -1,5 +1,5 @@
-import { getSocketIO } from "../connection/socket.js";
 import * as tweetRepository from "../data/tweet.js";
+import { getSocketIO } from "../connection/socket.js";
 
 export async function getAllTweets(req, res) {
   const data = await tweetRepository.getAll();
@@ -7,9 +7,10 @@ export async function getAllTweets(req, res) {
 }
 
 export async function getTweetsByUserId(req, res) {
-  const userId = req.query?.userId;
-  const data = await (userId
-    ? tweetRepository.getAllByUserId(userId)
+  const { username } = req.query;
+
+  const data = await (username
+    ? tweetRepository.getAllByUsername(username)
     : tweetRepository.getAll());
 
   res.status(200).json(data);
@@ -26,45 +27,46 @@ export async function getTweet(req, res) {
 }
 
 export async function createTweet(req, res) {
-  const { tweet } = req.body;
-  const newTweet = await tweetRepository.create(tweet, req.userId);
+  const { text } = req.body;
+  const newTweet = await tweetRepository.create(text, req.userId);
 
-  getSocketIO().emit("update", newTweet[0]);
+  getSocketIO().emit("update", "New Tweets!");
 
   res.status(201).json(newTweet);
 }
 
 export async function updateTweet(req, res) {
-  const { id } = req.params;
-  const text = req.body?.tweet;
+  const { id, text } = req.body;
   const tweet = await tweetRepository.getById(id);
 
   if (!tweet) {
     return res.sendStatus(404);
   }
+
   if (tweet.userId !== req.userId) {
     return res.sendStatus(403);
   }
 
   const updated = await tweetRepository.update(id, text);
-  getSocketIO().emit("update", updated);
+  getSocketIO().emit("update", "New Update!");
 
   res.status(200).json(updated);
 }
 
 export async function deleteTweet(req, res) {
   const { id } = req.body;
-  const tweet = tweetRepository.getById(id);
+  const tweet = await tweetRepository.getById(id);
 
   if (!tweet) {
     return res.sendStatus(404);
   }
-  if (tweet.userId !== req.id) {
+
+  if (tweet.userId !== req.userId) {
     return res.sendStatus(403);
   }
 
   await tweetRepository.remove(id);
-  getSocketIO().emit("update", "Done");
+  getSocketIO().emit("update", "Done!");
 
   res.sendStatus(204);
 }

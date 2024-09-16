@@ -8,7 +8,7 @@ import authRouter from "./router/auth.js";
 import { config } from "./config.js";
 import { Server } from "socket.io";
 import { initSocket } from "./connection/socket.js";
-import { db } from "./db/database.js";
+import { sequelize } from "./db/database.js";
 
 const corsOption = {
   origin: config.cors.allowedOrigin,
@@ -26,15 +26,15 @@ app.use("/auth", authRouter);
 app.use(express.json());
 app.use(cors(corsOption));
 
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.sendStatus(404);
 });
-app.use((error, req, res, next) => {
+app.use((error, req, res) => {
   console.error(error);
   res.sendStatus(500);
 });
 
-db.getConnection().then(console.log);
-
-const server = app.listen(config.host.port);
-initSocket(server);
+sequelize.sync().then((client) => {
+  const server = app.listen(config.host.port);
+  initSocket(server);
+});
