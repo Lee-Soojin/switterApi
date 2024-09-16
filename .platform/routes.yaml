@@ -9,6 +9,6 @@
 
 "https://{default}/ws":
   type: upstream
-  websocket: true
+  upstream: "switter:http"
   cache:
     enabled: false
