@@ -25,7 +25,6 @@ export async function addUser(user) {
       [username, password, name, email, url]
     )
     .then((result) => {
-      console.log(result);
       return result[0].insertId;
     });
 }
