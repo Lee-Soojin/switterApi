@@ -7,7 +7,7 @@ export async function getAllTweets(req, res) {
 }
 
 export async function getTweetsByUserId(req, res) {
-  const { username } = req.query;
+  const { username } = req.params;
 
   const data = await (username
     ? tweetRepository.getAllByUsername(username)
