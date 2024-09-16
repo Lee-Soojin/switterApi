@@ -62,4 +62,6 @@ authRouter.post("/login", validateCredential, authController.signIn);
 
 authRouter.get("/me", isAuth, authController.me);
 
+authRouter.get("/profile/:userId", isAuth, authController.profile);
+
 export default authRouter;
