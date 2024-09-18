@@ -1,13 +1,10 @@
-import os from "os";
-import fs from "fs";
 import express from "express";
 import "express-async-errors";
 import cors from "cors";
-import path from "path";
-import { body, param } from "express-validator";
-import * as authController from "../controller/auth.js";
-import { validate } from "../middleware/validate.js";
+import { body } from "express-validator";
 import { isAuth } from "../middleware/auth.js";
+import { validate } from "../middleware/validate.js";
+import * as authController from "../controller/auth.js";
 
 function validatePassword(password) {
   return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
@@ -59,9 +56,9 @@ authRouter.post("/signup", validateSignup, authController.signUp);
 authRouter.post("/login", validateCredential, authController.signIn);
 
 // get user info
-
 authRouter.get("/me", isAuth, authController.me);
 
+// get profile
 authRouter.get("/profile/:userId", isAuth, authController.profile);
 
 export default authRouter;
