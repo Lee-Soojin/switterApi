@@ -57,9 +57,8 @@ export async function me(req, res, next) {
   res.status(200).json({ token: req.token, ...user });
 }
 
-export async function profile(req, res, next) {
-  const user = await authRepository.findById(req.userId);
-
+export async function profile(req, res) {
+  const user = await authRepository.getUser(req.params.userId);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
