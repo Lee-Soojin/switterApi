@@ -1,12 +1,16 @@
-import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
+import { Server } from "socket.io";
 import { config } from "../config.js";
 
 class Socket {
   constructor(server) {
     this.io = new Server(server, {
       cors: {
-        origin: config.cors.allowedOrigin,
+        origin: [
+          config.cors.allowedOrigin,
+          "http://localhost:3000",
+          "https://s-witter.netlify.app",
+        ],
       },
     });
 
